@@ -1,0 +1,1291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Visa Service — Country Visa Processing — MyVisa</title>
+<link rel="icon" type="image/png" href="../../assets/assets/images/fav.png">
+<link rel="stylesheet" href="../../assets/css/styles.css">
+<style>
+  .search-container {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    padding: 4rem 1rem;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 3rem;
+    border-radius: 0 0 40px 40px;
+  }
+  .search-box {
+    max-width: 700px;
+    margin: 2rem auto 0;
+    position: relative;
+  }
+  .search-input {
+    width: 100%;
+    padding: 1.25rem 2rem;
+    padding-right: 4rem;
+    border-radius: 50px;
+    border: none;
+    font-size: 1.1rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    outline: none;
+    color: var(--text-dark);
+  }
+  .search-icon {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+    font-size: 1.5rem;
+  }
+  .filter-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    padding: 0 1rem;
+  }
+  .filter-btn {
+    padding: 0.6rem 1.5rem;
+    border-radius: 30px;
+    border: 2px solid var(--border);
+    background: #fff;
+    color: var(--text-dark);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  }
+
+  /* Accordion Styles */
+  .accordion-container {
+    max-width: 1000px;
+    margin: 0 auto 4rem;
+    padding: 0 1rem;
+  }
+  .country-item {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .country-item.active {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+  }
+  .country-header {
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: #fff;
+    transition: background 0.3s;
+    user-select: none;
+  }
+  .country-header:hover {
+    background: #f8fafc;
+  }
+  .country-flag {
+    font-size: 2rem;
+    margin-right: 1.5rem;
+    width: 40px;
+    text-align: center;
+  }
+  .country-info {
+    flex: 1;
+  }
+  .country-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+  }
+  .visa-types {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 0.25rem;
+  }
+  .expand-icon {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    transition: transform 0.3s;
+  }
+  .country-item.active .expand-icon {
+    transform: rotate(180deg);
+    color: var(--primary);
+  }
+
+  /* Content Styles */
+  .country-content {
+    display: none;
+    padding: 2rem;
+    border-top: 1px solid #f1f5f9;
+    background: #fff;
+  }
+  .country-item.active .country-content {
+    display: block;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #f1f5f9;
+  }
+  .tab-btn {
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-light);
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+  }
+  .tab-btn.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+
+  .req-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 0.75rem 2rem;
+  }
+  .req-item {
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: start;
+    gap: 0.75rem;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+  }
+  .req-icon {
+    color: var(--primary);
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+  .info-item label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+  }
+  .info-item span {
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 1rem;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 4rem;
+    color: var(--text-light);
+    font-size: 1.2rem;
+    display: none;
+  }
+</style>
+</head>
+<body>
+<!-- Header will be loaded here -->
+<header class="site-header">
+<div class="container header-inner">
+<a class="brand" href="#" id="brand-link">
+<img src="#" alt="MyVisa Logo" class="brand-logo" id="brand-logo-img">
+<span>MyVisa &mdash; Education &amp; Travel Solution</span>
+</a>
+<nav class="nav" id="main-nav">
+<a href="#" data-page="home" id="nav-home">Home</a>
+<a href="#" data-page="about" id="nav-about">About</a>
+<div class="nav-dropdown">
+<a href="javascript:void(0)" class="dropdown-toggle" data-page="service" id="nav-service">Services <span class="dropdown-arrow">&#9662;</span></a>
+<div class="dropdown-menu">
+<a href="#" id="nav-service-1">Study Abroad</a>
+<a href="#" id="nav-service-2">Visa Process</a>
+<a href="#" id="nav-service-3">Tour Packages</a>
+<a href="#" id="nav-service-4">Air Ticket</a>
+<a href="#" id="nav-service-5">Hajj &amp; Umrah</a>
+<a href="#" id="nav-service-6">Hotel Book</a>
+<a href="#" id="nav-service-7">IT Services</a>
+</div>
+</div>
+<div class="nav-dropdown">
+<a href="javascript:void(0)" class="dropdown-toggle" data-page="training" id="nav-training">Training <span class="dropdown-arrow">&#9662;</span></a>
+<div class="dropdown-menu">
+<a href="#" id="nav-training-1">IELTS Preparation</a>
+<a href="#" id="nav-training-2">Mobile App Dev</a>
+<a href="#" id="nav-training-3">GDS Ticketing</a>
+<a href="#" id="nav-training-4">Visa Processing</a>
+</div>
+</div>
+<a href="#" data-page="updates" id="nav-updates">Latest Update</a>
+<a href="#" data-page="career" id="nav-career">Career</a>
+<a href="#" data-page="success" id="nav-success">Success</a>
+<a href="#" data-page="contact" id="nav-contact" class="nav-cta">Contact Us</a>
+</nav>
+<button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" type="button">
+  <span class="hamburger-bar"></span>
+  <span class="hamburger-bar"></span>
+  <span class="hamburger-bar"></span>
+</button>
+</div>
+
+<script>
+(function initNavigation() {
+  var navToggle = document.getElementById("nav-toggle");
+  var nav = document.getElementById("main-nav");
+
+  if (navToggle && nav) {
+    // Remove existing listeners to prevent duplicates if script runs multiple times
+    var newNavToggle = navToggle.cloneNode(true);
+    navToggle.parentNode.replaceChild(newNavToggle, navToggle);
+    navToggle = newNavToggle;
+
+    navToggle.addEventListener("click", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var isOpen = nav.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", isOpen);
+      nav.querySelectorAll(".nav-dropdown").forEach(function(d) { d.classList.remove("active"); });
+      if (isOpen) {
+        document.body.classList.add("nav-open");
+      } else {
+        document.body.classList.remove("nav-open");
+      }
+    });
+
+    window.addEventListener("resize", function() {
+      if (window.innerWidth > 768 && nav.classList.contains("open")) {
+        nav.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("nav-open");
+      }
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!nav.classList.contains("open")) return;
+      if (!nav.contains(e.target) && !navToggle.contains(e.target)) {
+        nav.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("nav-open");
+      }
+    });
+
+    if (!window._navLinkCloseHandler) {
+      window._navLinkCloseHandler = function(e) {
+        if (window.innerWidth > 768) return;
+        var nav = document.getElementById("main-nav");
+        if (!nav || !nav.classList.contains("open")) return;
+        if (e.target.closest(".dropdown-toggle") || e.target.closest(".dropdown-menu")) return;
+        var clickedLink = e.target.closest("a");
+        if (clickedLink && !clickedLink.classList.contains("dropdown-toggle") && clickedLink.closest(".nav")) {
+          nav.classList.remove("open");
+          var toggle = document.getElementById("nav-toggle");
+          if (toggle) toggle.setAttribute("aria-expanded", "false");
+          document.body.classList.remove("nav-open");
+        }
+      };
+      document.addEventListener("click", window._navLinkCloseHandler, false);
+    }
+  }
+
+  if (!window._dropdownToggleHandler) {
+    window._dropdownToggleHandler = function(e) {
+      if (window.innerWidth > 768) return;
+      var nav = document.getElementById("main-nav");
+      if (!nav || !nav.classList.contains("open")) return;
+      var dropdownToggle = e.target.closest(".dropdown-toggle");
+      if (!dropdownToggle) return;
+      var dropdown = dropdownToggle.closest(".nav-dropdown");
+      if (!dropdown) return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      var isActive = dropdown.classList.contains("active");
+      nav.querySelectorAll(".nav-dropdown").forEach(function(d) { if (d !== dropdown) d.classList.remove("active"); });
+      dropdown.classList.toggle("active", !isActive);
+      return false;
+    };
+  }
+
+  document.removeEventListener("click", window._dropdownToggleHandler, true);
+  document.addEventListener("click", window._dropdownToggleHandler, true);
+
+  if (nav) {
+    nav.querySelectorAll(".dropdown-menu a").forEach(function(link) {
+      link.addEventListener("click", function() {
+        if (window.innerWidth <= 768) {
+          var n = document.getElementById("main-nav");
+          var t = document.getElementById("nav-toggle");
+          if (n) { n.classList.remove("open"); if (t) t.setAttribute("aria-expanded", "false"); }
+          document.body.classList.remove("nav-open");
+        }
+      });
+    });
+  }
+
+  var currentPath = window.location.pathname;
+  document.querySelectorAll(".nav a[data-page]").forEach(function(link) {
+    var linkPath = new URL(link.href, window.location.origin).pathname;
+    if (currentPath.includes(linkPath) ||
+        (link.getAttribute("data-page") === "home" && (currentPath === "/" || currentPath.endsWith("index.html")))) {
+      link.classList.add("active");
+    }
+  });
+})();
+</script>
+</header>
+
+
+
+<script>
+(function initNavigation() {
+  var navToggle = document.getElementById("nav-toggle");
+  var nav = document.getElementById("main-nav");
+
+  if (navToggle && nav) {
+    navToggle.addEventListener("click", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var isOpen = nav.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", isOpen);
+      nav.querySelectorAll(".nav-dropdown").forEach(function(d) { d.classList.remove("active"); });
+      if (isOpen) {
+        document.body.classList.add("nav-open");
+      } else {
+        document.body.classList.remove("nav-open");
+      }
+    });
+
+    window.addEventListener("resize", function() {
+      if (window.innerWidth > 768 && nav.classList.contains("open")) {
+        nav.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("nav-open");
+      }
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!nav.classList.contains("open")) return;
+      if (!nav.contains(e.target) && !navToggle.contains(e.target)) {
+        nav.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("nav-open");
+      }
+    });
+
+    if (!window._navLinkCloseHandler) {
+      window._navLinkCloseHandler = function(e) {
+        if (window.innerWidth > 768) return;
+        var nav = document.getElementById("main-nav");
+        if (!nav || !nav.classList.contains("open")) return;
+        if (e.target.closest(".dropdown-toggle") || e.target.closest(".dropdown-menu")) return;
+        var clickedLink = e.target.closest("a");
+        if (clickedLink && !clickedLink.classList.contains("dropdown-toggle") && clickedLink.closest(".nav")) {
+          nav.classList.remove("open");
+          var toggle = document.getElementById("nav-toggle");
+          if (toggle) toggle.setAttribute("aria-expanded", "false");
+          document.body.classList.remove("nav-open");
+        }
+      };
+      document.addEventListener("click", window._navLinkCloseHandler, false);
+    }
+  }
+
+  if (!window._dropdownToggleHandler) {
+    window._dropdownToggleHandler = function(e) {
+      if (window.innerWidth > 768) return;
+      var nav = document.getElementById("main-nav");
+      if (!nav || !nav.classList.contains("open")) return;
+      var dropdownToggle = e.target.closest(".dropdown-toggle");
+      if (!dropdownToggle) return;
+      var dropdown = dropdownToggle.closest(".nav-dropdown");
+      if (!dropdown) return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      var isActive = dropdown.classList.contains("active");
+      nav.querySelectorAll(".nav-dropdown").forEach(function(d) { if (d !== dropdown) d.classList.remove("active"); });
+      dropdown.classList.toggle("active", !isActive);
+      return false;
+    };
+  }
+
+  document.removeEventListener("click", window._dropdownToggleHandler, true);
+  document.addEventListener("click", window._dropdownToggleHandler, true);
+
+  if (nav) {
+    nav.querySelectorAll(".dropdown-menu a").forEach(function(link) {
+      link.addEventListener("click", function() {
+        if (window.innerWidth <= 768) {
+          var n = document.getElementById("main-nav");
+          var t = document.getElementById("nav-toggle");
+          if (n) { n.classList.remove("open"); if (t) t.setAttribute("aria-expanded", "false"); }
+          document.body.classList.remove("nav-open");
+        }
+      });
+    });
+  }
+
+  var currentPath = window.location.pathname;
+  document.querySelectorAll(".nav a[data-page]").forEach(function(link) {
+    var linkPath = new URL(link.href, window.location.origin).pathname;
+    if (currentPath.includes(linkPath) ||
+        (link.getAttribute("data-page") === "home" && (currentPath === "/" || currentPath.endsWith("index.html")))) {
+      link.classList.add("active");
+    }
+  });
+})();
+</script>
+
+
+<script>
+(function initNavigation() {
+  var navToggle = document.getElementById("nav-toggle");
+  var nav = document.getElementById("main-nav");
+
+  if (navToggle && nav) {
+    navToggle.addEventListener("click", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var isOpen = nav.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", isOpen);
+      nav.querySelectorAll(".nav-dropdown").forEach(function(d) { d.classList.remove("active"); });
+      if (isOpen) {
+        document.body.classList.add("nav-open");
+      } else {
+        document.body.classList.remove("nav-open");
+      }
+    });
+
+    window.addEventListener("resize", function() {
+      if (window.innerWidth > 768 && nav.classList.contains("open")) {
+        nav.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("nav-open");
+      }
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!nav.classList.contains("open")) return;
+      if (!nav.contains(e.target) && !navToggle.contains(e.target)) {
+        nav.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("nav-open");
+      }
+    });
+
+    if (!window._navLinkCloseHandler) {
+      window._navLinkCloseHandler = function(e) {
+        if (window.innerWidth > 768) return;
+        var nav = document.getElementById("main-nav");
+        if (!nav || !nav.classList.contains("open")) return;
+        if (e.target.closest(".dropdown-toggle") || e.target.closest(".dropdown-menu")) return;
+        var clickedLink = e.target.closest("a");
+        if (clickedLink && !clickedLink.classList.contains("dropdown-toggle") && clickedLink.closest(".nav")) {
+          nav.classList.remove("open");
+          var toggle = document.getElementById("nav-toggle");
+          if (toggle) toggle.setAttribute("aria-expanded", "false");
+          document.body.classList.remove("nav-open");
+        }
+      };
+      document.addEventListener("click", window._navLinkCloseHandler, false);
+    }
+  }
+
+  if (!window._dropdownToggleHandler) {
+    window._dropdownToggleHandler = function(e) {
+      if (window.innerWidth > 768) return;
+      var nav = document.getElementById("main-nav");
+      if (!nav || !nav.classList.contains("open")) return;
+      var dropdownToggle = e.target.closest(".dropdown-toggle");
+      if (!dropdownToggle) return;
+      var dropdown = dropdownToggle.closest(".nav-dropdown");
+      if (!dropdown) return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      var isActive = dropdown.classList.contains("active");
+      nav.querySelectorAll(".nav-dropdown").forEach(function(d) { if (d !== dropdown) d.classList.remove("active"); });
+      dropdown.classList.toggle("active", !isActive);
+      return false;
+    };
+  }
+
+  document.removeEventListener("click", window._dropdownToggleHandler, true);
+  document.addEventListener("click", window._dropdownToggleHandler, true);
+
+  if (nav) {
+    nav.querySelectorAll(".dropdown-menu a").forEach(function(link) {
+      link.addEventListener("click", function() {
+        if (window.innerWidth <= 768) {
+          var n = document.getElementById("main-nav");
+          var t = document.getElementById("nav-toggle");
+          if (n) { n.classList.remove("open"); if (t) t.setAttribute("aria-expanded", "false"); }
+          document.body.classList.remove("nav-open");
+        }
+      });
+    });
+  }
+
+  var currentPath = window.location.pathname;
+  document.querySelectorAll(".nav a[data-page]").forEach(function(link) {
+    var linkPath = new URL(link.href, window.location.origin).pathname;
+    if (currentPath.includes(linkPath) ||
+        (link.getAttribute("data-page") === "home" && (currentPath === "/" || currentPath.endsWith("index.html")))) {
+      link.classList.add("active");
+    }
+  });
+})();
+</script>
+
+
+<script>
+(function initNavigation() {
+  var navToggle = document.getElementById("nav-toggle");
+  var nav = document.getElementById("main-nav");
+
+  if (navToggle && nav) {
+    navToggle.addEventListener("click", function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var isOpen = nav.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", isOpen);
+      nav.querySelectorAll(".nav-dropdown").forEach(function(d) { d.classList.remove("active"); });
+      if (isOpen) {
+        document.body.classList.add("nav-open");
+      } else {
+        document.body.classList.remove("nav-open");
+      }
+    });
+
+    window.addEventListener("resize", function() {
+      if (window.innerWidth > 768 && nav.classList.contains("open")) {
+        nav.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("nav-open");
+      }
+    });
+
+    document.addEventListener("click", function(e) {
+      if (!nav.classList.contains("open")) return;
+      if (!nav.contains(e.target) && !navToggle.contains(e.target)) {
+        nav.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("nav-open");
+      }
+    });
+
+    if (!window._navLinkCloseHandler) {
+      window._navLinkCloseHandler = function(e) {
+        if (window.innerWidth > 768) return;
+        var nav = document.getElementById("main-nav");
+        if (!nav || !nav.classList.contains("open")) return;
+        if (e.target.closest(".dropdown-toggle") || e.target.closest(".dropdown-menu")) return;
+        var clickedLink = e.target.closest("a");
+        if (clickedLink && !clickedLink.classList.contains("dropdown-toggle") && clickedLink.closest(".nav")) {
+          nav.classList.remove("open");
+          var toggle = document.getElementById("nav-toggle");
+          if (toggle) toggle.setAttribute("aria-expanded", "false");
+          document.body.classList.remove("nav-open");
+        }
+      };
+      document.addEventListener("click", window._navLinkCloseHandler, false);
+    }
+  }
+
+  if (!window._dropdownToggleHandler) {
+    window._dropdownToggleHandler = function(e) {
+      if (window.innerWidth > 768) return;
+      var nav = document.getElementById("main-nav");
+      if (!nav || !nav.classList.contains("open")) return;
+      var dropdownToggle = e.target.closest(".dropdown-toggle");
+      if (!dropdownToggle) return;
+      var dropdown = dropdownToggle.closest(".nav-dropdown");
+      if (!dropdown) return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      var isActive = dropdown.classList.contains("active");
+      nav.querySelectorAll(".nav-dropdown").forEach(function(d) { if (d !== dropdown) d.classList.remove("active"); });
+      dropdown.classList.toggle("active", !isActive);
+      return false;
+    };
+  }
+
+  document.removeEventListener("click", window._dropdownToggleHandler, true);
+  document.addEventListener("click", window._dropdownToggleHandler, true);
+
+  if (nav) {
+    nav.querySelectorAll(".dropdown-menu a").forEach(function(link) {
+      link.addEventListener("click", function() {
+        if (window.innerWidth <= 768) {
+          var n = document.getElementById("main-nav");
+          var t = document.getElementById("nav-toggle");
+          if (n) { n.classList.remove("open"); if (t) t.setAttribute("aria-expanded", "false"); }
+          document.body.classList.remove("nav-open");
+        }
+      });
+    });
+  }
+
+  var currentPath = window.location.pathname;
+  document.querySelectorAll(".nav a[data-page]").forEach(function(link) {
+    var linkPath = new URL(link.href, window.location.origin).pathname;
+    if (currentPath.includes(linkPath) ||
+        (link.getAttribute("data-page") === "home" && (currentPath === "/" || currentPath.endsWith("index.html")))) {
+      link.classList.add("active");
+    }
+  });
+})();
+</script>
+
+<main>
+  <div class="search-container">
+    <div class="container">
+      <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem;">Visa Service</h1>
+      <p style="font-size: 1.25rem; opacity: 0.9; max-width: 700px; margin: 0 auto;">Search your desired country for visa information, requirements, and professional processing services.</p>
+      <div class="search-box">
+        <input type="text" id="countrySearch" class="search-input" placeholder="Search your country (e.g. USA, UK, Canada, Thailand...)" onkeyup="handleSearch()">
+        <span class="search-icon">🔍</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="filter-tabs">
+      <button class="filter-btn active" onclick="filterCategory('all', this)">All Countries</button>
+      <button class="filter-btn" onclick="filterCategory('popular', this)">Popular</button>
+      <button class="filter-btn" onclick="filterCategory('asia', this)">Asia</button>
+      <button class="filter-btn" onclick="filterCategory('europe', this)">Europe</button>
+      <button class="filter-btn" onclick="filterCategory('america', this)">America</button>
+      <button class="filter-btn" onclick="filterCategory('oceania', this)">Oceania</button>
+    </div>
+
+    <div class="accordion-container" id="countryAccordion">
+      <!-- Accordion items will be generated by JS -->
+    </div>
+
+    <div id="noResults" class="no-results">
+      <div style="font-size: 4rem; margin-bottom: 1rem;">🔎</div>
+      <h3>No countries found matching your search.</h3>
+      <p>Try searching for a different country or contact us for assistance.</p>
+    </div>
+
+    <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 4rem 2rem; border-radius: 24px; text-align: center; margin-bottom: 4rem; color: #fff; box-shadow: 0 20px 40px rgba(37, 99, 235, 0.2);">
+      <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem;">Don't see your destination?</h2>
+      <p style="font-size: 1.2rem; margin-bottom: 2.5rem; opacity: 0.95; max-width: 800px; margin-left: auto; margin-right: auto;">We process visas for over 150 countries worldwide. Contact our team for custom requirements.</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="../contact.html" class="btn primary" style="background: #fff; color: var(--primary); padding: 1rem 3rem; font-size: 1.1rem;">Get Free Consultation</a>
+        <a href="tel:+8801818120900" class="btn outline" style="border-color: #fff; color: #fff; padding: 1rem 3rem; font-size: 1.1rem;">Call Support</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const rawCountries = [
+    {
+      id: 'aus', name: 'Australia', flag: '🇦🇺', cat: 'popular oceania', visa: 'Tourist • Business • Family',
+      req: ['Passport', 'Recent Photo', 'Detailed Bank History', 'Employment Docs', 'Invitation Letter (if applicable)', 'Family details'],
+      check: ['Subclass Selection', 'Online Portal Submission', 'Biometric Collection', 'Health Check (if required)', 'Financial Audit'],
+      time: '20-30 Working Days', charge: 'Contact for details'
+    },
+    {
+      id: 'canada', name: 'Canada', flag: '🇨🇦', cat: 'popular america', visa: 'Tourist • Business • Transit',
+      req: ['Valid Passport', 'Biometric Photos (35x45mm)', 'Bank Statement & Solvency', 'NOC/Trade License', 'Birth Certificate', 'Asset documents', 'Cover Letter'],
+      check: ['SOP/Motivation Letter', 'Document Scanning', 'Biometric Instructions (BIL)', 'VFS Appointment', 'Application Tracking'],
+      time: '2-4 Months', charge: 'Contact for details'
+    },
+    {
+      id: 'china', name: 'China', flag: '🇨🇳', cat: 'asia', visa: 'Tourist • Business • Transit',
+      req: ['Passport', 'Photos', 'Bank Statement', 'Trade License / NOC', 'Visiting Card'],
+      check: ['Embassy Submission', 'Form Completion', 'Itinerary Planning'],
+      time: '10-15 Working Days', charge: 'Standard'
+    },
+    {
+      id: 'egypt', name: 'Egypt', flag: '🇪🇬', cat: 'africa', visa: 'Tourist • Business',
+      req: ['Passport', 'Photos', 'Bank Statement', 'NOC'],
+      check: ['Form completion', 'Embassy Submission'],
+      time: '7-10 Working Days', charge: 'Standard'
+    },
+    {
+      id: 'india', name: 'India', flag: '🇮🇳', cat: 'asia', visa: 'Tourist • Business • Medical',
+      req: ['Latest Passport', 'Photos (2x2)', 'Utility Bill copy', 'NOC/Trade License', 'Bank Statement / Dollar Endorsement'],
+      check: ['IVAC Appointment Booking', 'Form Completion', 'Document Organization', 'Submission Support'],
+      time: '7-10 Working Days', charge: 'Minimal charges'
+    },
+    {
+      id: 'japan', name: 'Japan', flag: '🇯🇵', cat: 'asia', visa: 'Tourist • Business • Transit',
+      req: ['Passport', 'Photo', 'Bank Statement', 'Solvency', 'Income Tax proof'],
+      check: ['VFS Global Submission', 'Financial Documentation', 'Itinerary Proof', 'Interview Prep (if called)'],
+      time: '7-10 Working Days', charge: 'Standard'
+    },
+    {
+      id: 'malaysia', name: 'Malaysia', flag: '🇲🇾', cat: 'popular asia', visa: 'Tourist • Business • Medical',
+      req: ['Original Passport', 'Photos (35x45mm blue/white background)', 'Bank Statement', 'Solvency', 'NOC/Trade License'],
+      check: ['E-Visa / Sticker Selection', 'VFS Submission', 'Single Entry / Multiple Entry Check', 'Digital Tracking'],
+      time: '5-10 Working Days', charge: 'Standard rates'
+    },
+    {
+      id: 'maldives', name: 'Maldives', flag: '🇲🇻', cat: 'asia', visa: 'Tourist • Arrival Visa Support',
+      req: ['Passport', 'Confirmed Hotel Booking', 'Return Ticket'],
+      check: ['IMUGA Portal Entry', 'Arrival assistance'],
+      time: 'Instant', charge: 'Minimal'
+    },
+    {
+      id: 'nz', name: 'New Zealand', flag: '🇳🇿', cat: 'oceania', visa: 'Tourist • Business • Family',
+      req: ['Passport', 'Photos', 'Financial documents', 'NOC'],
+      check: ['Online application', 'Biometric (if required)'],
+      time: '20-30 Days', charge: 'Standard'
+    },
+    {
+      id: 'saudi', name: 'Saudi Arabia', flag: '🇸🇦', cat: 'popular asia', visa: 'Tourist • Business • Umrah',
+      req: ['Passport', 'Photos', 'NID', 'Vaccination proof', 'Bio-metric (for Umrah)'],
+      check: ['Enjaz Registration', 'Mofa Payment', 'Insurance Purchase', 'Embassy Submission', 'Biometric verification'],
+      time: '5-7 Working Days', charge: 'Contact for details'
+    },
+    {
+      id: 'schengen', name: 'Schengen (Europe)', flag: '🇪🇺', cat: 'popular europe', visa: 'Germany • France • Italy • Spain',
+      req: ['Passport', 'Biometric Photos', 'Travel Insurance (30k Euro cover)', 'Hotel/Flight Booking', '6 Months Bank details', 'NOC/Trade License'],
+      check: ['Specific Embassy Selection', 'VFS/BLS Appointment', 'Itinerary Planning', 'Cover Letter Writing', 'Insurance Policy Issue'],
+      time: '15-20 Working Days', charge: 'Contact for details'
+    },
+    {
+      id: 'singapore', name: 'Singapore', flag: '🇸🇬', cat: 'popular asia', visa: 'Tourist • Business • Transit',
+      req: ['Passport', 'Photos', 'Bank Statement', 'Visiting Card', 'Invitation (V39A) if applicable'],
+      check: ['Level 1 / Level 2 Assessment', 'E-visa Processing', 'Local Contact Verification', 'ICA Submission'],
+      time: '5-7 Working Days', charge: 'Standard rates'
+    },
+    {
+      id: 'thailand', name: 'Thailand', flag: '🇹🇭', cat: 'popular asia', visa: 'Tourist • Business • Medical',
+      req: ['Passport', 'Photos', 'Bank Statement (minimum balance 60k)', 'Solvency', 'NOC/Trade License'],
+      check: ['Embassy Appointment', 'VFS Submission', 'Insurance Check', 'Flight/Hotel Verification'],
+      time: '5-7 Working Days', charge: 'Standard rates'
+    },
+    {
+      id: 'turkey', name: 'Turkey', flag: '🇹🇷', cat: 'asia', visa: 'Sticker Visa • E-Visa',
+      req: ['Passport', 'Photos', 'Health Insurance', 'Bank Statement', 'NOC/Trade License'],
+      check: ['Submission to Embassy/Gateway', 'Interview appointment'],
+      time: '10-15 Working Days', charge: 'Standard'
+    },
+    {
+      id: 'uae', name: 'UAE (Dubai)', flag: '🇦🇪', cat: 'popular asia', visa: 'Tourist • Business • Transit',
+      req: ['Passport Scan', 'Photo Scan', 'NID copy'],
+      check: ['E-visa Application', 'Security Clearance', 'Health Insurance', 'Ticket Reservation'],
+      time: '3-5 Working Days', charge: 'Competitive rates'
+    },
+    {
+      id: 'uk', name: 'United Kingdom', flag: '🇬🇧', cat: 'popular europe', visa: 'Tourist • Business • Family',
+      req: ['Valid Passport', 'Last 2 Recent Photos (35x45mm, White background)', 'Bank Statement (last 6 months)', 'Bank Solvency Certificate', 'Trade License (for business)', 'NOC (for service)', 'TIN/Tax Returns', 'Marriage Certificate (if applicable)'],
+      check: ['Document Legalization', 'Online Application Submission', 'VFS Global Appointment', 'Biometric Enrollment', 'Tuberculosis Test (if required)'],
+      time: '15 Working Days', charge: 'Standard / Priority available'
+    },
+    {
+      id: 'usa', name: 'United States', flag: '🇺🇸', cat: 'popular america', visa: 'Tourist • Business • Transit',
+      req: ['Original Passport (valid for 6 months)', 'Last 2 Recent Photos (2x2 inch, White background)', 'Bank Statement (last 6 months)', 'Bank Solvency Certificate', 'Visiting Card / Professional ID', 'NID Copy', 'Forwarding Letter / NOC', 'Property/Asset documents (optional)'],
+      check: ['Document Verification', 'DS-160 Form Completion', 'Appointment Booking', 'Mock Interview Preparation', 'Submission Guidance'],
+      time: '15-20 Working Days', charge: 'Contact for details'
+    },
+    {
+      id: 'vietnam', name: 'Vietnam', flag: '🇻🇳', cat: 'asia', visa: 'E-Visa • Tourist • Business',
+      req: ['Passport Scan', 'Photo Scan'],
+      check: ['Portal Submission', 'Approval Letter management'],
+      time: '3-5 Working Days', charge: 'Low'
+    }
+  ];
+
+  // Alphabetical sort (A to Z) - ensures Australia is first
+  const sortedCountries = [...rawCountries].sort((a, b) => a.name.localeCompare(b.name));
+
+  function renderAccordions(data) {
+    const container = document.getElementById('countryAccordion');
+    container.innerHTML = '';
+    data.forEach((c, index) => {
+      const item = document.createElement('div');
+      // Set the very first item (Australia) to be expanded initially
+      item.className = index === 0 ? 'country-item active' : 'country-item';
+      item.setAttribute('data-category', c.cat);
+
+      item.innerHTML = `
+        <div class="country-header" onclick="toggleAccordion(this)">
+          <div class="country-flag">${c.flag}</div>
+          <div class="country-info">
+            <h3 class="country-name">${c.name}</h3>
+            <div class="visa-types">${c.visa}</div>
+          </div>
+          <div class="expand-icon">▾</div>
+        </div>
+        <div class="country-content" style="${index === 0 ? 'display:block' : ''}">
+          <div class="tabs">
+            <div class="tab-btn active" onclick="switchTab(this, 'req')">Requirements</div>
+            <div class="tab-btn" onclick="switchTab(this, 'check')">Our Checklist</div>
+            <div class="tab-btn" onclick="switchTab(this, 'info')">Processing Info</div>
+          </div>
+
+          <div class="tab-content-inner" data-tab="req" style="display:block">
+            <ul class="req-list">
+              ${c.req.map(r => `<li class="req-item"><span class="req-icon">✓</span> ${r}</li>`).join('')}
+            </ul>
+          </div>
+
+          <div class="tab-content-inner" data-tab="check" style="display:none">
+            <ul class="req-list">
+              ${c.check.map(i => `<li class="req-item"><span class="req-icon">✓</span> ${i}</li>`).join('')}
+            </ul>
+          </div>
+
+          <div class="tab-content-inner" data-tab="info" style="display:none">
+            <div class="info-grid">
+              <div class="info-item">
+                <label>Estimated Time</label>
+                <span>${c.time}</span>
+              </div>
+              <div class="info-item">
+                <label>Visa Validity</label>
+                <span>As per Embassy</span>
+              </div>
+              <div class="info-item">
+                <label>Our Charge</label>
+                <span>${c.charge}</span>
+              </div>
+            </div>
+            <div style="margin-top: 1.5rem; text-align: right;">
+              <a href="../contact.html" class="btn primary">Apply for ${c.name} Visa</a>
+            </div>
+          </div>
+        </div>
+      `;
+      container.appendChild(item);
+    });
+  }
+
+  // Initial render with sorted countries
+  renderAccordions(sortedCountries);
+
+  function toggleAccordion(header) {
+    const item = header.parentElement;
+    const isActive = item.classList.contains('active');
+
+    // Close other items
+    document.querySelectorAll('.country-item').forEach(i => {
+        if(i !== item) {
+          i.classList.remove('active');
+          i.querySelector('.country-content').style.display = 'none';
+        }
+    });
+
+    item.classList.toggle('active');
+    const content = item.querySelector('.country-content');
+    content.style.display = item.classList.contains('active') ? 'block' : 'none';
+  }
+
+  function switchTab(btn, tabName) {
+    event.stopPropagation();
+    const content = btn.closest('.country-content');
+
+    // Update buttons
+    content.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Update content panes
+    content.querySelectorAll('.tab-content-inner').forEach(c => c.style.display = 'none');
+    content.querySelector(`.tab-content-inner[data-tab="${tabName}"]`).style.display = 'block';
+  }
+
+  function handleSearch() {
+    const filter = document.getElementById('countrySearch').value.toLowerCase();
+    const items = document.querySelectorAll('.country-item');
+    const noResults = document.getElementById('noResults');
+    let hasResults = false;
+    let firstFound = false;
+
+    items.forEach(item => {
+      const name = item.querySelector('.country-name').textContent.toLowerCase();
+      const content = item.querySelector('.country-content');
+      if (name.includes(filter)) {
+        item.style.display = "";
+        hasResults = true;
+
+        // Expand first result of search
+        item.classList.remove('active');
+        content.style.display = 'none';
+        if(!firstFound && filter !== "") {
+           item.classList.add('active');
+           content.style.display = 'block';
+           firstFound = true;
+        }
+      } else {
+        item.style.display = "none";
+        item.classList.remove('active');
+        content.style.display = 'none';
+      }
+    });
+
+    noResults.style.display = hasResults ? "none" : "block";
+
+    // Reset filters
+    if (filter !== "") {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector('.filter-btn[onclick*="all"]').classList.add('active');
+    }
+  }
+
+  function filterCategory(category, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('countrySearch').value = "";
+
+    const items = document.querySelectorAll('.country-item');
+    let firstFound = false;
+
+    items.forEach(item => {
+      const cats = item.getAttribute('data-category').split(' ');
+      const content = item.querySelector('.country-content');
+      if (category === 'all' || cats.includes(category)) {
+        item.style.display = "";
+        item.classList.remove('active');
+        content.style.display = 'none';
+        if(!firstFound) {
+           item.classList.add('active');
+           content.style.display = 'block';
+           firstFound = true;
+        }
+      } else {
+        item.style.display = "none";
+        item.classList.remove('active');
+        content.style.display = 'none';
+      }
+    });
+  }
+</script>
+
+<!-- Footer will be loaded here -->
+<footer class="site-footer">
+<div class="container">
+<div class="footer-inner">
+<div class="footer-section">
+<h3>MyVisa Bangladesh</h3>
+<p>Education & Travel Solution. We are B2B partner of IATA approved agency. We provide One Stop Solution for Study, Visa, Travel & Career.</p>
+<p style="margin-top: 1rem;"><strong>Head office:</strong> Hanif Tower, 4th floor, Uttarkhan Majar, Uttara 1230 Dhaka, Bangladesh<br><strong>Badda office:</strong> Nadda, Evercare Road, Raba Ideal Creative madrasa Goli, Waterpolo BD, Vatara, Dhaka</p>
+</div>
+<div class="footer-section">
+<h3>Quick Links</h3>
+<a href="index.html" id="footer-home">Home</a>
+<a href="pages/about.html" id="footer-about">About Us</a>
+<a href="pages/career.html" id="footer-career">Career</a>
+<a href="pages/success_story.html" id="footer-success">Success Story</a>
+<a href="pages/contact.html" id="footer-contact">Contact</a>
+</div>
+<div class="footer-section">
+<h3>Contact Info</h3>
+<p>Phone: <a href="tel:+8801818120900">+880 1818-120900</a></p>
+<p>Email: <a href="mailto:contact.myvisabd@gmail.com">contact.myvisabd@gmail.com</a></p>
+<div class="social-icons">
+<a href="https://www.facebook.com/MyVisaBDOfficial" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+</svg>
+</a>
+<a href="https://www.albarakahinternational.com/" target="_blank" rel="noopener noreferrer" aria-label="Website" class="social-icon">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+</svg>
+</a>
+<a href="https://www.linkedin.com/company/myvisabd/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="social-icon">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+</svg>
+</a>
+<a href="https://www.youtube.com/@myvisabd" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="social-icon">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+<path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+</svg>
+</a>
+</div>
+<div style="margin-top: 1.5rem;">
+<h3 style="margin-bottom: 0.75rem; font-size: 1.1rem; color: #fff;">Download MyVisa App</h3>
+<a href="https://drive.google.com/file/d/1WbMdeNWgzNUUfYc_ULemuI4k2pcF3_Xh/view?usp=sharing" target="_blank" rel="noopener noreferrer" aria-label="Download Android App" class="social-icon">
+<img src="../../assets/assets/icons/google-play-store-icon.svg" alt="Google Play Store" style="width: 24px; height: 24px;">
+</a>
+</div>
+</div>
+<div class="footer-section">
+<h3>Working Hours</h3>
+    <p>Sat – Thus: 9:00 AM – 6:00 PM</p>
+    <p>Friday: 10:00 AM – 10:00 PM</p>
+</div>
+</div>
+<div class="footer-bottom">
+<p>&copy; <span id="current-year"></span> MyVisa Bangladesh - Education & Travel Solution. All rights reserved.</p>
+<div class="footer-links">
+<a href="pages/privacy.html" id="footer-privacy">Privacy & Policy</a>
+<span>|</span>
+<a href="pages/terms.html" id="footer-terms">Terms & Services</a>
+</div>
+</div>
+</div>
+</footer>
+
+<!-- Chat Widget -->
+<div class="chat-widget" id="chatWidget">
+<div class="chat-window" id="chatWindow">
+<div class="chat-header">
+<div>
+<h3>Chat with Us</h3>
+<div class="chat-status">We're online. How can we help?</div>
+</div>
+</div>
+<div class="chat-body" id="chatBody">
+<div class="chat-message bot">
+<div class="message-bubble">
+Hello! 👋 Welcome to MyVisa. How can we assist you today?
+</div>
+</div>
+</div>
+<div class="chat-form">
+<form id="chatForm">
+<input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." required>
+<button type="submit" class="chat-send">Send</button>
+</form>
+<div class="chat-quick-actions">
+<a href="pages/contact.html" class="quick-action-btn" id="chat-contact">📞 Contact Us</a>
+<a href="tel:+8801818120900" class="quick-action-btn">📱 Call Now</a>
+</div>
+</div>
+</div>
+<button class="chat-button" id="chatButton" aria-label="Open chat">
+<span class="chat-icon">💬</span>
+<span class="close-icon">✕</span>
+</button>
+</div>
+
+<!-- Scroll to Top Button -->
+<button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+↑
+</button>
+
+<script>
+// Set current year
+const yearSpan = document.getElementById('current-year');
+if (yearSpan) {
+  yearSpan.textContent = new Date().getFullYear();
+}
+
+// Chat Widget Functionality
+const chatWidget = document.getElementById('chatWidget');
+const chatButton = document.getElementById('chatButton');
+const chatWindow = document.getElementById('chatWindow');
+const chatBody = document.getElementById('chatBody');
+const chatForm = document.getElementById('chatForm');
+const chatInput = document.getElementById('chatInput');
+
+if (chatButton && chatWidget) {
+  chatButton.addEventListener('click', () => {
+    chatWidget.classList.toggle('active');
+  });
+}
+
+if (chatForm && chatInput) {
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const message = chatInput.value.trim();
+    if (message) {
+      addMessage(message, 'user');
+      chatInput.value = '';
+      
+      // Simulate bot response
+      setTimeout(() => {
+        addMessage('Thank you for your message! Our team will get back to you shortly. For immediate assistance, please call us at +880 1818-120900 or email contact.myvisabd@gmail.com', 'bot');
+      }, 1000);
+    }
+  });
+}
+
+function addMessage(text, type) {
+  if (!chatBody) return;
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `chat-message ${type}`;
+  const bubble = document.createElement('div');
+  bubble.className = 'message-bubble';
+  bubble.textContent = text;
+  messageDiv.appendChild(bubble);
+  chatBody.appendChild(messageDiv);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+// Close chat when clicking outside
+document.addEventListener('click', (e) => {
+  if (chatWidget && chatWidget.classList.contains('active') && 
+      chatWindow && !chatWindow.contains(e.target) &&
+      chatButton && !chatButton.contains(e.target)) {
+    chatWidget.classList.remove('active');
+  }
+});
+
+// Scroll to Top Functionality
+const scrollToTopBtn = document.getElementById('scrollToTop');
+
+if (scrollToTopBtn) {
+  window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 300) {
+      scrollToTopBtn.classList.add('show');
+    } else {
+      scrollToTopBtn.classList.remove('show');
+    }
+  });
+
+  scrollToTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+}
+</script>
+
+<script src="../../includes/update-links.js"></script>
+
+
+<!-- Chat Widget -->
+<div class="chat-widget" id="chatWidget">
+<div class="chat-window" id="chatWindow">
+<div class="chat-header">
+<div>
+<h3>Chat with Us</h3>
+<div class="chat-status">We're online. How can we help?</div>
+</div>
+</div>
+<div class="chat-body" id="chatBody">
+<div class="chat-message bot">
+<div class="message-bubble">
+Hello! 👋 Welcome to MyVisa. How can we assist you today?
+</div>
+</div>
+</div>
+<div class="chat-form">
+<form id="chatForm">
+<input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." required>
+<button type="submit" class="chat-send">Send</button>
+</form>
+<div class="chat-quick-actions">
+<a href="pages/contact.html" class="quick-action-btn" id="chat-contact">📞 Contact Us</a>
+<a href="tel:+8801818120900" class="quick-action-btn">📱 Call Now</a>
+</div>
+</div>
+</div>
+<button class="chat-button" id="chatButton" aria-label="Open chat">
+<span class="chat-icon">💬</span>
+<span class="close-icon">✕</span>
+</button>
+</div>
+
+<!-- Scroll to Top Button -->
+<button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+↑
+</button>
+
+<script>
+// Set current year
+const yearSpan = document.getElementById('current-year');
+if (yearSpan) {
+  yearSpan.textContent = new Date().getFullYear();
+}
+
+// Chat Widget Functionality
+const chatWidget = document.getElementById('chatWidget');
+const chatButton = document.getElementById('chatButton');
+const chatWindow = document.getElementById('chatWindow');
+const chatBody = document.getElementById('chatBody');
+const chatForm = document.getElementById('chatForm');
+const chatInput = document.getElementById('chatInput');
+
+if (chatButton && chatWidget) {
+  chatButton.addEventListener('click', () => {
+    chatWidget.classList.toggle('active');
+  });
+}
+
+if (chatForm && chatInput) {
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const message = chatInput.value.trim();
+    if (message) {
+      addMessage(message, 'user');
+      chatInput.value = '';
+      
+      // Simulate bot response
+      setTimeout(() => {
+        addMessage('Thank you for your message! Our team will get back to you shortly. For immediate assistance, please call us at +880 1818-120900 or email contact.myvisabd@gmail.com', 'bot');
+      }, 1000);
+    }
+  });
+}
+
+function addMessage(text, type) {
+  if (!chatBody) return;
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `chat-message ${type}`;
+  const bubble = document.createElement('div');
+  bubble.className = 'message-bubble';
+  bubble.textContent = text;
+  messageDiv.appendChild(bubble);
+  chatBody.appendChild(messageDiv);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+// Close chat when clicking outside
+document.addEventListener('click', (e) => {
+  if (chatWidget && chatWidget.classList.contains('active') && 
+      chatWindow && !nav.contains(e.target) &&
+      chatButton && !chatButton.contains(e.target)) {
+    chatWidget.classList.remove('active');
+  }
+});
+
+// Scroll to Top Functionality
+const scrollToTopBtn = document.getElementById('scrollToTop');
+
+if (scrollToTopBtn) {
+  window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 300) {
+      scrollToTopBtn.classList.add('show');
+    } else {
+      scrollToTopBtn.classList.remove('show');
+    }
+  });
+
+  scrollToTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+}
+</script>
+
+<script src="../../includes/update-links.js"></script>
+</body>
+</html>
